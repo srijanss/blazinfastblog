@@ -5,6 +5,9 @@
  */
 
 module.exports = {
+  siteMetadata: {
+    title: `BlazinFastBlog`,
+  },
   plugins: [
     {
       resolve: `gatsby-plugin-typography`,
