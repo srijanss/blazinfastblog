@@ -2,6 +2,8 @@ import React from 'react'
 import Header from '../components/header'
 import Container from '../components/container'
 import styles from './about.module.css'
+import { graphql } from 'gatsby'
+import Img from 'gatsby-image'
 
 const User = (props) => {
   return (
@@ -15,11 +17,12 @@ const User = (props) => {
   )
 }
 
-export default () => {
+export default ({ data }) => {
   return (
     <Container>
       <Header headerText={`About header`}/>
       <p>Such wow. Very React. CSS Modules.</p>
+      <Img fluid={data.fileName.childImageSharp.fluid} />
       <User
         username="Jane Doe"
         avatar="https://s3.amazonaws.com/uifaces/faces/twitter/adellecharles/128.jpg"
@@ -33,3 +36,15 @@ export default () => {
     </Container>
   )
 }
+
+export const query = graphql`
+  query {
+    fileName: file(relativePath: { eq: "profile-pic.jpeg" }) {
+      childImageSharp {
+        fluid(maxWidth: 400, maxHeight: 250) {
+          ...GatsbyImageSharpFluid
+        }
+      }
+    }
+  }
+`
