@@ -4,7 +4,7 @@ import Container from '../components/container'
 import styles from './about.module.css'
 import { graphql } from 'gatsby'
 import Img from 'gatsby-image'
-import { Formik, Field, Form, ErrorMessage } from 'formik'
+import { Formik, Form, useField } from 'formik'
 import * as Yup from 'yup'
 
 const User = (props) => {
@@ -19,19 +19,20 @@ const User = (props) => {
   )
 }
 
-// A custom validation function. This must return an object
-// which keys are symmetrical to our values/initialValues
-// const validate = values => {
-//   const errors = {}
-
-//   if (!values.email) {
-//     errors.email = 'Required'
-//   } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
-//     errors.email = 'Invalid email address'
-//   }
-
-//   return errors
-// }
+const MyTextInput = ({ label, ...props }) => {
+  // useField() returns [formik.getFieldProps(), formik.getFieldMeta()]
+  // which we can spread on <input> and also replace ErrorMessage entirely.
+  const [field, meta] = useField(props);
+  return (
+    <>
+      <label htmlFor={props.id || props.name}>{label}</label>
+      <input className="text-input" {...field} {...props} />
+      {meta.touched && meta.error ? (
+        <div className="error">{meta.error}</div>
+      ) : null}
+    </>
+  );
+};
 
 const SubscribeForm = (props) => {
   // Pass the useFormik() hook initial form values and a submit function that will
@@ -52,9 +53,12 @@ const SubscribeForm = (props) => {
       }}
     >
       <Form>
-        <label htmlFor="email">Email Address</label>
-        <Field name="email" type="email" />
-        <ErrorMessage name="email" /> 
+        <MyTextInput
+          label="Email Address"
+          name="email"
+          type="email"
+          placeholder="email@example.com"
+        />
         <button type="submit">Submit</button>
       </Form>
     </Formik>
