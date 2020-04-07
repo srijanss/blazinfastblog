@@ -54,14 +54,7 @@ const SubscribeForm = (props) => {
       <h3>Subscribe</h3>
       <form onSubmit={formik.handleSubmit}>
         <label htmlFor="email">Email Address</label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          value={formik.values.email}
-        />
+        <input name="email" {...formik.getFieldProps('email')} />
         <button type="submit">Submit</button>
         {formik.touched.email && formik.errors.email ? <div>{formik.errors.email}</div> : null}
       </form>
