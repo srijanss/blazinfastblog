@@ -4,7 +4,7 @@ import Container from '../components/container'
 import styles from './about.module.css'
 import { graphql } from 'gatsby'
 import Img from 'gatsby-image'
-import { useFormik } from 'formik'
+import { Formik, Field, Form, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
 
 const User = (props) => {
@@ -36,29 +36,28 @@ const User = (props) => {
 const SubscribeForm = (props) => {
   // Pass the useFormik() hook initial form values and a submit function that will
   // be called when the form is submitted
-  const formik = useFormik({
-    initialValues: {
-      email: '',
-    },
-    validationSchema: Yup.object({
-      email: Yup.string()
-        .email('Invalid email address')
-        .required('Required'),
-    }),
-    onSubmit: values => {
-      alert(JSON.stringify(values, null, 2))
-    },
-  })
   return (
-    <div>
-      <h3>Subscribe</h3>
-      <form onSubmit={formik.handleSubmit}>
+    <Formik
+      initialValues={{ email: '' }}
+      validationSchema={Yup.object({
+        email: Yup.string()
+          .email('Invalid email address')
+          .required('Required'),
+      })}
+      onSubmit={(values, { setSubmitting }) => {
+        setTimeout(() => {
+          alert(JSON.stringify(values, null, 2));
+          setSubmitting(false);
+        }, 400);
+      }}
+    >
+      <Form>
         <label htmlFor="email">Email Address</label>
-        <input name="email" {...formik.getFieldProps('email')} />
+        <Field name="email" type="email" />
+        <ErrorMessage name="email" /> 
         <button type="submit">Submit</button>
-        {formik.touched.email && formik.errors.email ? <div>{formik.errors.email}</div> : null}
-      </form>
-    </div>
+      </Form>
+    </Formik>
   )
 }
 
