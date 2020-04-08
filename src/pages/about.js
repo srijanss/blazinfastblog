@@ -22,7 +22,7 @@ const User = (props) => {
 const MyTextInput = ({ label, ...props }) => {
   // useField() returns [formik.getFieldProps(), formik.getFieldMeta()]
   // which we can spread on <input> and also replace ErrorMessage entirely.
-  const [field, meta] = useField(props);
+  const [field, meta] = useField(props)
   return (
     <>
       <label htmlFor={props.id || props.name}>{label}</label>
@@ -31,15 +31,21 @@ const MyTextInput = ({ label, ...props }) => {
         <div className="error">{meta.error}</div>
       ) : null}
     </>
-  );
-};
+  )
+}
+
+const encode = (data) => {
+  return Object.keys(data)
+      .map(key => encodeURIComponent(key) + "=" + encodeURIComponent(data[key]))
+      .join("&")
+}
 
 const SubscribeForm = (props) => {
   // Pass the useFormik() hook initial form values and a submit function that will
   // be called when the form is submitted
   return (
     <Formik
-      initialValues={{ email: '' }}
+      initialValues={{ 'bot-field': '', 'form-name': 'subscribe', email: '' }}
       validationSchema={Yup.object({
         email: Yup.string()
           .email('Invalid email address')
@@ -47,12 +53,21 @@ const SubscribeForm = (props) => {
       })}
       onSubmit={(values, { setSubmitting }) => {
         setTimeout(() => {
-          alert(JSON.stringify(values, null, 2));
-          setSubmitting(false);
+          // alert(JSON.stringify(values, null, 2));
+          setSubmitting(false)
+          fetch("/", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: encode({ "form-name": "formik", ...values })
+          })
+            .then(() => alert("Success!"))
+            .catch(error => alert(error))
+
+          // e.preventDefault();
         }, 400);
       }}
     >
-      <Form name="subscribe" method="post" data-netlify="true" data-netlify-honeypot="bot-field" netlify>
+      <Form name="subscribe" data-netlify="true" data-netlify-honeypot="bot-field">
         <input type="hidden" name="form-name" value="subscribe" />
         <MyTextInput
           label="Email Address"
