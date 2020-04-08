@@ -52,7 +52,8 @@ const SubscribeForm = (props) => {
         }, 400);
       }}
     >
-      <Form>
+      <Form name="subscribe" method="post" data-netlify="true" data-netlify-honeypot="bot-field">
+        <input type="hidden" name="form-name" value="subscribe" />
         <MyTextInput
           label="Email Address"
           name="email"
